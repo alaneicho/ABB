@@ -61,11 +61,19 @@ class Conjunto
             // Puntero a la raíz del subárbol derecho.
             Nodo* der;
 
+            //Puntero al padre del nodo
+            Nodo* padre;
+
             // Decide si un elemento pertenece al subarbol que tiene como raiz al nodo o no.
             bool perteneceSubarbol(const T& clave) const;
             void meteloDondeVa(const T& clave);
             const T& dameMinimo() const;
             const T& dameMaximo() const;
+            void removerDeSubarbol(const T& clave);
+            void removerNodo();
+            void removerHoja();
+            void removerUnSoloHijo();
+            void removerDosHijos();
         };
 
         // Puntero a la raíz de nuestro árbol.
@@ -75,7 +83,7 @@ class Conjunto
 };
 
 template<class T>
-Conjunto<T>::Nodo::Nodo(const T &v) : valor(v) , izq(nullptr), der(nullptr) {
+Conjunto<T>::Nodo::Nodo(const T &v) : valor(v) , izq(nullptr), der(nullptr), padre(nullptr) {
 }
 
 template<class T>
@@ -95,6 +103,7 @@ void Conjunto<T>::Nodo::meteloDondeVa(const T &clave) {
     if (clave < this->valor){
         if (this->izq == nullptr){
             Nodo* nuevo_nodo = new Nodo(clave);
+            nuevo_nodo->padre = this;
             this->izq = nuevo_nodo;
         } else {
             this->izq->meteloDondeVa(clave);
@@ -102,6 +111,7 @@ void Conjunto<T>::Nodo::meteloDondeVa(const T &clave) {
     } else if (clave > this->valor){
         if (this->der == nullptr){
             Nodo* nuevo_nodo = new Nodo(clave);
+            nuevo_nodo->padre = this;
             this->der = nuevo_nodo;
         } else {
             this->der->meteloDondeVa(clave);
@@ -125,6 +135,64 @@ const T& Conjunto<T>::Nodo::dameMaximo() const {
     } else {
         return this->der->dameMaximo();
     }
+}
+
+//Precond: la clave esta en el subarbol
+// Encuentra el nodo a remover y llama a removerNodo
+template<class T>
+void Conjunto<T>::Nodo::removerDeSubarbol(const T &clave) {
+    if (this->valor == clave){
+        this->removerNodo();
+    } else if (clave < this->valor){
+        this->izq->removerDeSubarbol(clave);
+    } else if (clave > this->valor){
+        this->der->removerDeSubarbol(clave);
+    }
+}
+
+//Efectivamente se encarga de remover el nodo
+template<class T>
+void Conjunto<T>::Nodo::removerNodo() {
+    //Caso hoja
+    if (this->izq == nullptr && this->der == nullptr){
+        this->removerHoja();
+    } else if (this->izq == nullptr || this->der == nullptr){
+        this->removerUnSoloHijo();
+    }
+}
+
+template<class T>
+void Conjunto<T>::Nodo::removerHoja() {
+    //caso "Hoja izquierda"
+    if (this->padre->izq == this){
+        this->padre->izq = nullptr;
+    } else if (this->padre->der == this){
+        //caso "Hoja derecha"
+        this->padre->der = nullptr;
+    }
+    delete this;
+}
+
+template<class T>
+void Conjunto<T>::Nodo::removerUnSoloHijo() {
+    // Ponemos al hijo del nodo a borrar bajo su "abuelo" (padre del nodo a borrar)
+    Nodo* hijo;
+    if (this->izq != nullptr){
+        hijo = this->der;
+    } else if (this->der != nullptr){
+        hijo = this->der;
+    }
+    hijo->padre = this->padre;
+
+    //Borremos efectrivamente el nodo:
+    //caso "Hoja izquierda"
+    if (this->padre->izq == this){
+        this->padre->izq = hijo;
+    } else if (this->padre->der == this){
+        //caso "Hoja derecha"
+        this->padre->der = hijo;
+    }
+    delete this;
 }
 
 template<class T>
