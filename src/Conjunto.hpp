@@ -8,7 +8,7 @@ Conjunto<T>::Conjunto() : raiz_(nullptr), cantidad_(0) {
 
 template <class T>
 Conjunto<T>::~Conjunto() { 
-    // Completar
+    destruirNodo(this->raiz_);
 }
 
 template <class T>
@@ -87,6 +87,25 @@ unsigned int Conjunto<T>::cardinal() const {
 template <class T>
 void Conjunto<T>::mostrar(std::ostream&) const {
     assert(false);
+}
+
+template<class T>
+void Conjunto<T>::destruirNodo(Conjunto::Nodo *nodo) {
+    if (nodo->izq == nullptr && nodo->der == nullptr){      //es hoja
+        if (nodo->padre->izq == nodo){         //es hijo izq
+            nodo->padre->izq = nullptr;
+        } else if (nodo->padre->der == nodo){   // es hijo der
+            nodo->padre->der = nullptr;
+        }
+        delete nodo;
+    } else {                                                // no es hoja
+        if (nodo->izq != nullptr){
+            this->destruirNodo(nodo->izq);
+        }
+        if (nodo->der != nullptr){
+            this->destruirNodo(nodo->der);
+        }
+    }
 }
 
 

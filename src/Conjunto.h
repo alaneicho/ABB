@@ -79,8 +79,12 @@ class Conjunto
             void removerNodoConDosHijos(Conjunto<T>& c);
         };
 
+        void destruirNodo(Nodo* nodo);
+
         // Puntero a la raíz de nuestro árbol.
         Nodo* raiz_;
+
+        //cardinal del conjunto en O(1), porque se me canto.
         unsigned int cantidad_;
 
 };
