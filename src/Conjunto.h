@@ -68,15 +68,15 @@ class Conjunto
             // Decide si un elemento pertenece al subarbol que tiene como raiz al nodo o no.
             bool perteneceSubarbol(const T& clave) const;
             void meteloDondeVa(const T& clave);
-            const Nodo* buscarPorClave(const T& clave) const;
+            Nodo* buscarPorClave(const T& clave);
             const Nodo* subirHastaLlegarPorIzquierda() const;
             const T& dameMinimo() const;
             const T& dameMaximo() const;
             void removerDeSubarbol(const T& clave);
-            void removerNodo();
-            void removerHoja();
-            void removerUnSoloHijo();
-            void removerDosHijos();
+            void removerNodo(Conjunto<T>& c);
+            void removerNodoHoja();
+            void removerNodoConUnSoloHijo();
+            void removerNodoConDosHijos(Conjunto<T>& c);
         };
 
         // Puntero a la raíz de nuestro árbol.
@@ -155,18 +155,18 @@ void Conjunto<T>::Nodo::removerDeSubarbol(const T &clave) {
 
 //Efectivamente se encarga de remover el nodo
 template<class T>
-void Conjunto<T>::Nodo::removerNodo() {
+void Conjunto<T>::Nodo::removerNodo(Conjunto<T>& c) {
     if (this->izq == nullptr && this->der == nullptr){          // Caso hoja
-        this->removerHoja();
+        this->removerNodoHoja();
     } else if (this->izq == nullptr || this->der == nullptr){   // Caso un solo hijo
-        this->removerUnSoloHijo();
+        this->removerNodoConUnSoloHijo();
     } else {                                                    // Caso dos hijos
-        this->removerDosHijos();
+        this->removerNodoConDosHijos(c);
     }
 }
 
 template<class T>
-void Conjunto<T>::Nodo::removerHoja() {
+void Conjunto<T>::Nodo::removerNodoHoja() {
     //caso "Hoja izquierda"
     if (this->padre->izq == this){
         this->padre->izq = nullptr;
@@ -178,31 +178,50 @@ void Conjunto<T>::Nodo::removerHoja() {
 }
 
 template<class T>
-void Conjunto<T>::Nodo::removerUnSoloHijo() {
+void Conjunto<T>::Nodo::removerNodoConUnSoloHijo() {
     // Ponemos al hijo del nodo a borrar bajo su "abuelo" (padre del nodo a borrar)
     Nodo* hijo;
     if (this->izq != nullptr){
-        hijo = this->der;
+        hijo = this->izq;
     } else if (this->der != nullptr){
         hijo = this->der;
     }
     hijo->padre = this->padre;
 
     //Borremos efectrivamente el nodo:
-    //caso "Hoja izquierda"
-    if (this->padre->izq == this){
+    if (this->padre->izq == this){          //caso "Hoja izquierda"
         this->padre->izq = hijo;
-    } else if (this->padre->der == this){
-        //caso "Hoja derecha"
+    } else if (this->padre->der == this){   //caso "Hoja derecha"
         this->padre->der = hijo;
     }
     delete this;
 }
 
+template<class T>
+void Conjunto<T>::Nodo::removerNodoConDosHijos(Conjunto<T>& c) {
+    //Los que pueden ocupar su lugar son: su inmediato sucesor, o su inmediato predecesor.
+
+    //Si NO es el maximo, entonces tiene inmediato sucesor, usaremos ese:
+    if(this->valor < c.maximo()){
+        Nodo* sucesor = this->buscarPorClave(c.siguiente(this->valor));
+        Nodo* reemplazo = new Nodo(c.siguiente(this->valor));
+        reemplazo->izq = this->izq;
+        reemplazo->der = this->der;
+        reemplazo->padre = this->padre;
+        delete this;
+        sucesor->removerNodo(c);
+    } else if (this->valor == c.maximo()){
+        //Si es el maximo del conjunto, es el que mas a la derecha esta, asique no puede tener hijo derecho.
+        this->removerNodo(c);   //Notar que aca caera en el caso "hoja" o en el caso "un hijo"(el izq)
+    }
+
+
+}
+
 //Busca y devuelve el nodo con la clave pasada por parametro, en el subarbol que tiene como raiz a this.
 //Precond: la clave esta en el subarbol.
 template<class T>
-const typename Conjunto<T>::Nodo *Conjunto<T>::Nodo::buscarPorClave(const T &clave) const {
+ typename Conjunto<T>::Nodo *Conjunto<T>::Nodo::buscarPorClave(const T &clave){
     if (this->valor == clave){
         return this;
     } else if (this->valor < clave){
@@ -221,6 +240,7 @@ const typename Conjunto<T>::Nodo *Conjunto<T>::Nodo::subirHastaLlegarPorIzquierd
         return this->padre->subirHastaLlegarPorIzquierda();
     }
 }
+
 
 template<class T>
 std::ostream& operator<<(std::ostream& os, const Conjunto<T>& c) {

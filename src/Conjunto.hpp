@@ -44,7 +44,8 @@ void Conjunto<T>::remover(const T& clave) {
     if (not this->pertenece(clave)){
         return;
     } else {
-        //removerlo posta
+        Nodo* nodo_byebye = this->raiz_->buscarPorClave(clave);
+        nodo_byebye->removerNodo(*this);
         this->cantidad_--;
     }
 }
@@ -54,7 +55,7 @@ const T& Conjunto<T>::siguiente(const T& clave) {
     //Siguiendo la diapo 20 de la clase de implementacion de conjuntos sobre ABBs
 
     //Aca estoy parado en el nodo con la clave pasada por parametro
-    const Nodo* nodo_clave = this->raiz_->buscarPorClave(clave);
+    Nodo* nodo_clave = this->raiz_->buscarPorClave(clave);
 
     if (nodo_clave->der != nullptr){                                  //Caso A
         return nodo_clave->der->dameMinimo();
