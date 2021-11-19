@@ -63,10 +63,13 @@ class Conjunto
 
             // Decide si un elemento pertenece al subarbol que tiene como raiz al nodo o no.
             bool perteneceSubarbol(const T& clave) const;
+            void meteloDondeVa(const T& clave);
+            const T& dameMinimo() const;
+            const T& dameMaximo() const;
         };
 
         // Puntero a la raíz de nuestro árbol.
-        Nodo* _raiz;
+        Nodo* raiz_;
         unsigned int cantidad_;
 
 };
@@ -83,6 +86,44 @@ bool Conjunto<T>::Nodo::perteneceSubarbol(const T & clave) const {
         return (this->izq != nullptr && this->izq->perteneceSubarbol(clave));
     } else {
         return (this->der != nullptr && this->der->perteneceSubarbol(clave));
+    }
+}
+
+template<class T>
+void Conjunto<T>::Nodo::meteloDondeVa(const T &clave) {
+
+    if (clave < this->valor){
+        if (this->izq == nullptr){
+            Nodo* nuevo_nodo = new Nodo(clave);
+            this->izq = nuevo_nodo;
+        } else {
+            this->izq->meteloDondeVa(clave);
+        }
+    } else if (clave > this->valor){
+        if (this->der == nullptr){
+            Nodo* nuevo_nodo = new Nodo(clave);
+            this->der = nuevo_nodo;
+        } else {
+            this->der->meteloDondeVa(clave);
+        }
+    }
+}
+
+template<class T>
+const T& Conjunto<T>::Nodo::dameMinimo() const {
+    if (this->izq == nullptr){
+        return this->valor;
+    } else {
+        return this->izq->dameMinimo();
+    }
+}
+
+template<class T>
+const T& Conjunto<T>::Nodo::dameMaximo() const {
+    if (this->der == nullptr){
+        return this->valor;
+    } else {
+        return this->der->dameMaximo();
     }
 }
 

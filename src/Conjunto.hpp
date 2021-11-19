@@ -2,7 +2,7 @@
 #include "Conjunto.h"
 
 template <class T>
-Conjunto<T>::Conjunto() : _raiz(nullptr), cantidad_(0) {
+Conjunto<T>::Conjunto() : raiz_(nullptr), cantidad_(0) {
     // Completar
 }
 
@@ -13,23 +13,40 @@ Conjunto<T>::~Conjunto() {
 
 template <class T>
 bool Conjunto<T>::pertenece(const T& clave) const {
-    if (this->_raiz->valor == clave){
+    if (this->cantidad_ == 0){
+        return false;
+    }else if (this->raiz_->valor == clave){
         return true;
-    } else if (clave < this->_raiz->valor){
-        return (this->_raiz->izq != nullptr && this->_raiz->izq->perteneceSubarbol(clave));
+    } else if (clave < this->raiz_->valor){
+        return (this->raiz_->izq != nullptr && this->raiz_->izq->perteneceSubarbol(clave));
     } else {
-        return (this->_raiz->der != nullptr && this->_raiz->der->perteneceSubarbol(clave));
+        return (this->raiz_->der != nullptr && this->raiz_->der->perteneceSubarbol(clave));
     }
 }
 
 template <class T>
 void Conjunto<T>::insertar(const T& clave) {
-    assert(false);
+    if (this->cantidad_ == 0){
+        this->raiz_ = new Nodo(clave);
+        this->cantidad_++;
+        return;
+    } else if (this->pertenece(clave)){
+        return;
+    } else {
+        this->raiz_->meteloDondeVa(clave);
+        this->cantidad_++;
+        return;
+    }
 }
 
 template <class T>
-void Conjunto<T>::remover(const T&) {
-    assert(false);
+void Conjunto<T>::remover(const T& clave) {
+    if (not this->pertenece(clave)){
+        return;
+    } else {
+        //removerlo posta
+        this->cantidad_--;
+    }
 }
 
 template <class T>
@@ -39,18 +56,17 @@ const T& Conjunto<T>::siguiente(const T& clave) {
 
 template <class T>
 const T& Conjunto<T>::minimo() const {
-    assert(false);
+    return this->raiz_->dameMinimo();
 }
 
 template <class T>
 const T& Conjunto<T>::maximo() const {
-    assert(false);
+    return this->raiz_->dameMaximo();
 }
 
 template <class T>
 unsigned int Conjunto<T>::cardinal() const {
-    assert(false);
-    return 0;
+    return this->cantidad_;
 }
 
 template <class T>
