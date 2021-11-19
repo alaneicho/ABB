@@ -30,6 +30,7 @@ class Conjunto
         void remover(const T&);
 
         // Siguiente elemento al recibido por párametro, en orden.
+        // Se asume que el elemento recibido se encuentra en el conjunto y existe un elemento siguiente.
         const T& siguiente(const T& elem);
 
         // Devuelve el mínimo elemento del conjunto según <.
@@ -67,6 +68,8 @@ class Conjunto
             // Decide si un elemento pertenece al subarbol que tiene como raiz al nodo o no.
             bool perteneceSubarbol(const T& clave) const;
             void meteloDondeVa(const T& clave);
+            const Nodo* buscarPorClave(const T& clave) const;
+            const Nodo* subirHastaLlegarPorIzquierda() const;
             const T& dameMinimo() const;
             const T& dameMaximo() const;
             void removerDeSubarbol(const T& clave);
@@ -153,11 +156,12 @@ void Conjunto<T>::Nodo::removerDeSubarbol(const T &clave) {
 //Efectivamente se encarga de remover el nodo
 template<class T>
 void Conjunto<T>::Nodo::removerNodo() {
-    //Caso hoja
-    if (this->izq == nullptr && this->der == nullptr){
+    if (this->izq == nullptr && this->der == nullptr){          // Caso hoja
         this->removerHoja();
-    } else if (this->izq == nullptr || this->der == nullptr){
+    } else if (this->izq == nullptr || this->der == nullptr){   // Caso un solo hijo
         this->removerUnSoloHijo();
+    } else {                                                    // Caso dos hijos
+        this->removerDosHijos();
     }
 }
 
@@ -193,6 +197,29 @@ void Conjunto<T>::Nodo::removerUnSoloHijo() {
         this->padre->der = hijo;
     }
     delete this;
+}
+
+//Busca y devuelve el nodo con la clave pasada por parametro, en el subarbol que tiene como raiz a this.
+//Precond: la clave esta en el subarbol.
+template<class T>
+const typename Conjunto<T>::Nodo *Conjunto<T>::Nodo::buscarPorClave(const T &clave) const {
+    if (this->valor == clave){
+        return this;
+    } else if (this->valor < clave){
+        return this->der->buscarPorClave(clave);
+    } else if (this->valor > clave){
+        return this->izq->buscarPorClave(clave);
+    }
+}
+
+//"Subimos en el arbol hasta llegar a un nodo por su rama izquierda, y devolvemos ese NODO"
+template<class T>
+const typename Conjunto<T>::Nodo *Conjunto<T>::Nodo::subirHastaLlegarPorIzquierda() const {
+    if (this->padre->izq == this){
+        return this->padre;
+    } else {
+        return this->padre->subirHastaLlegarPorIzquierda();
+    }
 }
 
 template<class T>

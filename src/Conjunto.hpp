@@ -51,7 +51,21 @@ void Conjunto<T>::remover(const T& clave) {
 
 template <class T>
 const T& Conjunto<T>::siguiente(const T& clave) {
-    assert(false);
+    //Siguiendo la diapo 20 de la clase de implementacion de conjuntos sobre ABBs
+
+    //Aca estoy parado en el nodo con la clave pasada por parametro
+    const Nodo* nodo_clave = this->raiz_->buscarPorClave(clave);
+
+    if (nodo_clave->der != nullptr){                                  //Caso A
+        return nodo_clave->der->dameMinimo();
+    } else {                                                         //Caso B
+        if(nodo_clave->padre->izq == nodo_clave){
+            return nodo_clave->padre->valor;                          //Caso B.1
+        } else {
+            //"Subimos en el arbol hasta llegar a un nodo por su rama izquierda, y devolvemos ese elemento"
+            return nodo_clave->subirHastaLlegarPorIzquierda()->valor;        //Caso B.2
+        }
+    }
 }
 
 template <class T>
