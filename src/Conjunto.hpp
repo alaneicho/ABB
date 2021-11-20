@@ -8,7 +8,7 @@ Conjunto<T>::Conjunto() : raiz_(nullptr), cantidad_(0) {
 
 template <class T>
 Conjunto<T>::~Conjunto() { 
-    destruirNodo(this->raiz_);
+    //destruirNodo(this->raiz_);
 }
 
 template <class T>

@@ -77,6 +77,7 @@ class Conjunto
             void removerNodoHoja();
             void removerNodoConUnSoloHijo();
             void removerNodoConDosHijos(Conjunto<T>& c);
+            void destruirHoja();
         };
 
         void destruirNodo(Nodo* nodo);
@@ -242,6 +243,15 @@ const typename Conjunto<T>::Nodo *Conjunto<T>::Nodo::subirHastaLlegarPorIzquierd
         return this->padre;
     } else {
         return this->padre->subirHastaLlegarPorIzquierda();
+    }
+}
+
+template<class T>
+void Conjunto<T>::Nodo::destruirHoja() {
+    if (this->padre->izq == this){  // es hijo izq
+        this->padre->izq = nullptr;
+    } else if (this->padre->der == this){ // es hijo der
+
     }
 }
 
