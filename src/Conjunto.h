@@ -87,8 +87,6 @@ private:
 
         void removerNodoConDosHijos(Conjunto<T> &c);
 
-        void destruirHoja();
-
         void destruirHaciaAbajo();
 
     };
@@ -215,10 +213,10 @@ void Conjunto<T>::Nodo::removerNodoConUnSoloHijo() {
     this->izq = hijo->izq;
     this->der = hijo->der;
 
-    if (this->izq != nullptr){
+    if (this->izq != nullptr) {
         this->izq->padre = this;
     }
-    if (this->der != nullptr){
+    if (this->der != nullptr) {
         this->der->padre = this;
     }
 
@@ -231,28 +229,12 @@ void Conjunto<T>::Nodo::removerNodoConDosHijos(Conjunto<T> &c) {
 
     //Si NO es el maximo, entonces tiene inmediato sucesor, usaremos ese:
     if (this->valor < c.maximo()) {
-
-
         Nodo *sucesor = c.buscarPorClave(c.siguiente(this->valor));
         this->valor = c.siguiente(this->valor);
-
-
-        /**
-        Nodo *reemplazo = new Nodo(c.siguiente(this->valor));
-        reemplazo->izq = this->izq;
-        reemplazo->der = this->der;
-        if (this->padre != nullptr) {
-            reemplazo->padre = this->padre;
-        }**/
-
         sucesor->removerNodo(c);
-    } else if (this->valor == c.maximo()) {
-        //Si es el maximo del conjunto, es el que mas a la derecha esta, asique no puede tener hijo derecho.
-        //... osea, a este if nunca se deberia entrar.
-        this->removerNodo(c);   //Notar que aca caera en el caso "hoja" o en el caso "un hijo"(el izq)
     }
-
-
+    //El caso donde SI es el maximo no esta, pues el maximo nunca puede tener dos hijos
+    // (Ya que no puede tener hijo derecho), nunca caera en este caso.
 }
 
 //Busca y devuelve el nodo con la clave pasada por parametro, en el subarbol que tiene como raiz a this.
@@ -279,15 +261,6 @@ const typename Conjunto<T>::Nodo *Conjunto<T>::Nodo::subirHastaLlegarPorIzquierd
 }
 
 template<class T>
-void Conjunto<T>::Nodo::destruirHoja() {
-    if (this->padre->izq == this) {  // es hijo izq
-        this->padre->izq = nullptr;
-    } else if (this->padre->der == this) { // es hijo der
-
-    }
-}
-
-template<class T>
 void Conjunto<T>::Nodo::destruirHaciaAbajo() {
     //this->padre = nullptr;
     if (this->izq != nullptr) {
@@ -304,21 +277,6 @@ void Conjunto<T>::Nodo::destruirHaciaAbajo() {
     }
     delete this;
 }
-
-/**
-//Destruye el ABB desde la raiz
-template<class T>
-void Conjunto<T>::destruirHaciaAbajo(Nodo *nodo){
-    nodo->padre = nullptr;
-    if (nodo->izq != nullptr){
-        this->destruirHaciaAbajo(nodo->izq);
-    }
-    if (nodo->der != nullptr){
-        this->destruirHaciaAbajo(nodo->der);
-    }
-    delete nodo;
-}**/
-
 
 template<class T>
 std::ostream &operator<<(std::ostream &os, const Conjunto<T> &c) {
