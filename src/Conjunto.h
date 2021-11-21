@@ -209,6 +209,8 @@ void Conjunto<T>::Nodo::removerNodoConUnSoloHijo() {
     } else if (this->der != nullptr) {
         hijo = this->der;
     }
+
+
     hijo->padre = this->padre;
 
     if (this->padre->izq == this) {          //caso "Hijo izquierdo"
@@ -218,6 +220,7 @@ void Conjunto<T>::Nodo::removerNodoConUnSoloHijo() {
     }
     //Borremos efectrivamente el nodo:
     delete this;
+
 }
 
 template<class T>
