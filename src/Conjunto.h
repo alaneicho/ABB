@@ -202,7 +202,8 @@ void Conjunto<T>::Nodo::removerNodoHoja() {
 
 template<class T>
 void Conjunto<T>::Nodo::removerNodoConUnSoloHijo() {
-    // Ponemos al hijo del nodo a borrar bajo su "abuelo" (padre del nodo a borrar)
+    // para salvar el caso raiz, no borramos nuestro nodo... borramos su hijo.
+    // Reemplazamos nuestro nodo por el valor de su hijo y modificamos los punteros necesarios.
     Nodo *hijo;
     if (this->izq != nullptr) {
         hijo = this->izq;
@@ -210,17 +211,18 @@ void Conjunto<T>::Nodo::removerNodoConUnSoloHijo() {
         hijo = this->der;
     }
 
+    this->valor = hijo->valor;
+    this->izq = hijo->izq;
+    this->der = hijo->der;
 
-    hijo->padre = this->padre;
-
-    if (this->padre->izq == this) {          //caso "Hijo izquierdo"
-        this->padre->izq = hijo;
-    } else if (this->padre->der == this) {   //caso "Hijo derecho"
-        this->padre->der = hijo;
+    if (this->izq != nullptr){
+        this->izq->padre = this;
     }
-    //Borremos efectrivamente el nodo:
-    delete this;
+    if (this->der != nullptr){
+        this->der->padre = this;
+    }
 
+    delete hijo;
 }
 
 template<class T>
