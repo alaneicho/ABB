@@ -95,6 +95,8 @@ private:
 
     void destruirNodo(Nodo *nodo);
 
+    Nodo *buscarPorClave(const T &clave);
+
 
     // Puntero a la raíz de nuestro árbol.
     Nodo *raiz_;
@@ -226,7 +228,7 @@ void Conjunto<T>::Nodo::removerNodoConDosHijos(Conjunto<T> &c) {
     if (this->valor < c.maximo()) {
 
 
-        Nodo *sucesor = this->buscarPorClave(c.siguiente(this->valor));
+        Nodo *sucesor = c.buscarPorClave(c.siguiente(this->valor));
         this->valor = c.siguiente(this->valor);
 
 
@@ -283,12 +285,12 @@ void Conjunto<T>::Nodo::destruirHoja() {
 template<class T>
 void Conjunto<T>::Nodo::destruirHaciaAbajo() {
     this->padre = nullptr;
-    if (this->izq != nullptr){
-        Nodo* izquierdo = this->izq;
+    if (this->izq != nullptr) {
+        Nodo *izquierdo = this->izq;
         izquierdo->destruirHaciaAbajo();
     }
-    if (this->der != nullptr){
-        Nodo* derecho = this->der;
+    if (this->der != nullptr) {
+        Nodo *derecho = this->der;
         derecho->destruirHaciaAbajo();
     }
     delete this;
