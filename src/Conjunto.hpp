@@ -9,10 +9,14 @@ Conjunto<T>::Conjunto() : raiz_(nullptr), cantidad_(0) {
 template <class T>
 Conjunto<T>::~Conjunto() { 
     //destruirNodo(this->raiz_);
+    //this->raiz_->destruirHaciaAbajo();
+    this->raiz_ = nullptr;
+    this->cantidad_ = 0;
 }
 
 template <class T>
 bool Conjunto<T>::pertenece(const T& clave) const {
+
     if (this->cantidad_ == 0){
         return false;
     }else if (this->raiz_->valor == clave){
@@ -22,6 +26,7 @@ bool Conjunto<T>::pertenece(const T& clave) const {
     } else {
         return (this->raiz_->der != nullptr && this->raiz_->der->perteneceSubarbol(clave));
     }
+
 }
 
 template <class T>
@@ -45,17 +50,17 @@ void Conjunto<T>::remover(const T& clave) {
         return;
     } else {
         Nodo* nodo_byebye = this->raiz_->buscarPorClave(clave);
-        nodo_byebye->removerNodo(*this);
+        nodo_byebye->removerNodo(this);
         this->cantidad_--;
     }
 }
 
 template <class T>
-const T& Conjunto<T>::siguiente(const T& clave) {
+const T& Conjunto<T>::siguiente(const T& elem) {
     //Siguiendo la diapo 20 de la clase de implementacion de conjuntos sobre ABBs
 
     //Aca estoy parado en el nodo con la clave pasada por parametro
-    Nodo* nodo_clave = this->raiz_->buscarPorClave(clave);
+    Nodo* nodo_clave = this->raiz_->buscarPorClave(elem);
 
     if (nodo_clave->der != nullptr){                                  //Caso A
         return nodo_clave->der->dameMinimo();
@@ -107,5 +112,7 @@ void Conjunto<T>::destruirNodo(Conjunto::Nodo *nodo) {
         }
     }
 }
+
+
 
 
