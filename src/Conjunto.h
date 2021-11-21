@@ -224,23 +224,24 @@ void Conjunto<T>::Nodo::removerNodoConDosHijos(Conjunto<T> &c) {
 
     //Si NO es el maximo, entonces tiene inmediato sucesor, usaremos ese:
     if (this->valor < c.maximo()) {
+
+
         Nodo *sucesor = this->buscarPorClave(c.siguiente(this->valor));
+        this->valor = c.siguiente(this->valor);
+
+
+        /**
         Nodo *reemplazo = new Nodo(c.siguiente(this->valor));
-
-
-
         reemplazo->izq = this->izq;
         reemplazo->der = this->der;
         if (this->padre != nullptr) {
             reemplazo->padre = this->padre;
-        }
+        }**/
 
-
-
-        delete this;
         sucesor->removerNodo(c);
     } else if (this->valor == c.maximo()) {
         //Si es el maximo del conjunto, es el que mas a la derecha esta, asique no puede tener hijo derecho.
+        //... osea, a este if nunca se deberia entrar.
         this->removerNodo(c);   //Notar que aca caera en el caso "hoja" o en el caso "un hijo"(el izq)
     }
 
