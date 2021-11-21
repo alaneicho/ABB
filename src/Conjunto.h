@@ -122,6 +122,7 @@ bool Conjunto<T>::Nodo::perteneceSubarbol(const T &clave) const {
 
 template<class T>
 void Conjunto<T>::Nodo::meteloDondeVa(const T &clave) {
+
     if (clave < this->valor) {
         if (this->izq == nullptr) {
             Nodo *nuevo_nodo = new Nodo(clave);
@@ -208,12 +209,12 @@ void Conjunto<T>::Nodo::removerNodoConUnSoloHijo() {
     }
     hijo->padre = this->padre;
 
-    //Borremos efectrivamente el nodo:
-    if (this->padre->izq == this) {          //caso "Hoja izquierda"
+    if (this->padre->izq == this) {          //caso "Hijo izquierdo"
         this->padre->izq = hijo;
-    } else if (this->padre->der == this) {   //caso "Hoja derecha"
+    } else if (this->padre->der == this) {   //caso "Hijo derecho"
         this->padre->der = hijo;
     }
+    //Borremos efectrivamente el nodo:
     delete this;
 }
 
@@ -225,11 +226,17 @@ void Conjunto<T>::Nodo::removerNodoConDosHijos(Conjunto<T> &c) {
     if (this->valor < c.maximo()) {
         Nodo *sucesor = this->buscarPorClave(c.siguiente(this->valor));
         Nodo *reemplazo = new Nodo(c.siguiente(this->valor));
+
+
+
         reemplazo->izq = this->izq;
         reemplazo->der = this->der;
         if (this->padre != nullptr) {
             reemplazo->padre = this->padre;
         }
+
+
+
         delete this;
         sucesor->removerNodo(c);
     } else if (this->valor == c.maximo()) {

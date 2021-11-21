@@ -50,7 +50,7 @@ void Conjunto<T>::remover(const T& clave) {
         return;
     } else {
         Nodo* nodo_byebye = this->raiz_->buscarPorClave(clave);
-        nodo_byebye->removerNodo(this);
+        nodo_byebye->removerNodo(*this);
         this->cantidad_--;
     }
 }
