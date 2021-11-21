@@ -289,13 +289,17 @@ void Conjunto<T>::Nodo::destruirHoja() {
 
 template<class T>
 void Conjunto<T>::Nodo::destruirHaciaAbajo() {
-    this->padre = nullptr;
+    //this->padre = nullptr;
     if (this->izq != nullptr) {
         Nodo *izquierdo = this->izq;
+        this->izq = nullptr;
+        izquierdo->padre = nullptr;
         izquierdo->destruirHaciaAbajo();
     }
     if (this->der != nullptr) {
         Nodo *derecho = this->der;
+        this->der = nullptr;
+        derecho->padre = nullptr;
         derecho->destruirHaciaAbajo();
     }
     delete this;
